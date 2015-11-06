@@ -2,107 +2,95 @@
 
 namespace CellularAutomataLib
 {
-    public class Field
-    {
-        bool[,] mCells;
+	public class Field
+	{
+		private bool[,] _cells;
 
-        public int Width
-        {
-            get
-            {
-                return mCells.GetLength(0);
-            }
-        }
+		public int Width => _cells.GetLength(0);
 
-        public int Height
-        {
-            get
-            {
-                return mCells.GetLength(1);
-            }
-        }
+		public int Height => _cells.GetLength(1);
 
-        public Field(UInt32 width, UInt32 height)
-        {
-            if (0 == width || 0 == height)
-            {
-                throw new ArgumentOutOfRangeException("Width and height must not be 0");
-            }
+		public Field(uint width, uint height)
+		{
+			if (0 == width || 0 == height)
+			{
+				throw new ArgumentOutOfRangeException("Width and height must not be 0");
+			}
 
-            mCells = new bool[width, height];
-        }
+			_cells = new bool[width, height];
+		}
 
-        public bool GetCell(UInt32 x, UInt32 y)
-        {
-            if (x >= Width || y >= Height)
-            {
-                return false;
-            }
+		public bool GetCell(uint x, uint y)
+		{
+			if (x >= Width || y >= Height)
+			{
+				return false;
+			}
 
-            return mCells[x, y];
-        }
+			return _cells[x, y];
+		}
 
-        public void SetCell(UInt32 x, UInt32 y)
-        {
-            if (x >= Width || y >= Height)
-            {
-                throw new ArgumentOutOfRangeException("Indices must be within field dimensions");
-            }
+		public void SetCell(uint x, uint y)
+		{
+			if (x >= Width || y >= Height)
+			{
+				throw new ArgumentOutOfRangeException("Indices must be within field dimensions");
+			}
 
-            mCells[x, y] = true;
-        }
+			_cells[x, y] = true;
+		}
 
-        public void Update()
-        {
-            bool [,] updateCells =  (bool [,]) mCells.Clone();
+		public void Update()
+		{
+			var updateCells = (bool[,])_cells.Clone();
 
-            for(int x = 0; x < Width; ++x)
-            {
-                for(int y = 0; y < Height; ++y)
-                {
-                    int neighbourCount = GetNeighbourCount(x, y);
+			for (var x = 0; x < Width; ++x)
+			{
+				for (var y = 0; y < Height; ++y)
+				{
+					var neighbourCount = GetNeighbourCount(x, y);
 
-                    if(neighbourCount < 2 || neighbourCount > 3)
-                    {
-                        updateCells[x, y] = false;
-                    }
+					if (neighbourCount < 2 || neighbourCount > 3)
+					{
+						updateCells[x, y] = false;
+					}
 
-                    if(neighbourCount == 3)
-                    {
-                        updateCells[x, y] = true;
-                    }
-                }
-            }
+					if (neighbourCount == 3)
+					{
+						updateCells[x, y] = true;
+					}
+				}
+			}
 
-            mCells = (bool[,]) updateCells.Clone();
-        }
+			_cells = (bool[,])updateCells.Clone();
+		}
 
-        private int GetNeighbourCount(int x, int y)
-        {
-            int count = 0;
+		private int GetNeighbourCount(int x, int y)
+		{
+			var count = 0;
 
-            for (int i = -1; i < 2; ++i)
-            {
-                for (int j = -1; j < 2; ++j)
-                {
-                    if(!(i == 0 && j == 0))
-                    {
-                        try
-                        {
-                            if(GetCell((UInt32) (x + i), (UInt32) (y + j)))
-                            {
-                                ++count;
-                            }
-                        }
-                        catch(ArgumentOutOfRangeException)
-                        {
+			for (var i = -1; i < 2; ++i)
+			{
+				for (var j = -1; j < 2; ++j)
+				{
+					if (i == 0 && j == 0)
+						continue;
 
-                        }
-                    }
-                }
-            }
-                
-            return count;
-        }
-    }
+					try
+					{
+						if (GetCell((uint)(x + i), (uint)(y + j)))
+						{
+							++count;
+						}
+					}
+					catch (ArgumentOutOfRangeException)
+					{
+
+					}
+				}
+			}
+
+			return count;
+		}
+	}
 }
