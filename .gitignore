@@ -1,0 +1,6 @@
+#Visual Studio files
+*.suo
+[Oo]bj/
+[Oo]ut/
+[Tt]est[Oo]ut/
+[Pp]ackages/
